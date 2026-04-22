@@ -37,7 +37,20 @@ builder.Services.AddCors(options =>
         });
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("PermitirTodo",
+        policy =>
+        {
+            policy.AllowAnyOrigin()
+                  .AllowAnyMethod()
+                  .AllowAnyHeader();
+        });
+});
+
 var app = builder.Build();
+
+app.UseCors("PermitirTodo");
 
 app.UseCors("AllowFrontend");
 
