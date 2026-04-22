@@ -39,23 +39,21 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("PermitirTodo",
+    options.AddPolicy("PermitirFrontend",
         policy =>
         {
-            policy.AllowAnyOrigin()
-                  .AllowAnyMethod()
-                  .AllowAnyHeader();
+            policy.WithOrigins("https://jolly-heliotrope-26141f.netlify.app")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod();
         });
 });
 
 var app = builder.Build();
 
-app.UseCors("PermitirTodo");
-
-app.UseCors("AllowFrontend");
+app.UseCors("PermitirFrontend");
 
 
-    app.UseSwagger();
+app.UseSwagger();
     app.UseSwaggerUI();
 
 
