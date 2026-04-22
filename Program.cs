@@ -40,11 +40,11 @@ app.UseSwaggerUI();
 // ❌ opcional: podés comentar esto en Render
 // app.UseHttpsRedirection();
 
-app.UseAuthorization();
+
 
 app.MapControllers();
 
 // Para Render
-app.Urls.Add("http://0.0.0.0:8080");
+
 
 app.Run();
