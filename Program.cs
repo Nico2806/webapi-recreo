@@ -6,10 +6,10 @@ var builder = WebApplication.CreateBuilder(args);
 // ✅ CORS (UNA sola configuración)
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("PermitirFrontend",
+    options.AddPolicy("Open",
         policy =>
         {
-            policy.WithOrigins("https://jolly-heliotrope-26141f.netlify.app")
+            policy.AllowAnyOrigin()
                   .AllowAnyHeader()
                   .AllowAnyMethod();
         });
@@ -29,7 +29,7 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 // ✅ ORDEN CORRECTO
-app.UseCors("PermitirFrontend");
+app.UseCors("Open");
 
 app.UseSwagger();
 app.UseSwaggerUI();
