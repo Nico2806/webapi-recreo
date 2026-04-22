@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Globalization;
 using WebRecreo.Models;
 
 namespace WebRecreo.Controllers
@@ -30,8 +31,14 @@ namespace WebRecreo.Controllers
             };
 
             // 🔥 FIX PRECIO
-            if (decimal.TryParse(form["precioTotal"], out var precio))
+            
+
+            var precioStr = form["precioTotal"].ToString();
+
+            if (decimal.TryParse(precioStr, NumberStyles.Any, CultureInfo.InvariantCulture, out var precio))
+            {
                 nuevo.PrecioTotal = precio;
+            }
 
             pedidos.Add(nuevo);
 
