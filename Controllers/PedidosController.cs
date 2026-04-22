@@ -11,13 +11,27 @@ namespace WebRecreo.Controllers
 
         // ✅ CREAR PEDIDO
         [HttpPost]
-        public IActionResult Post([FromForm] Pedido nuevo)
+        public IActionResult Post()
         {
-            nuevo.Id = pedidos.Count + 1;
-            nuevo.Fecha = DateTime.Now;
+            var form = Request.Form;
 
-            if (string.IsNullOrEmpty(nuevo.Estado))
-                nuevo.Estado = "Pendiente";
+            var nuevo = new Pedido
+            {
+                Id = pedidos.Count + 1,
+                Fecha = DateTime.Now,
+                ClienteNombre = form["clienteNombre"],
+                ClienteTelefono = form["clienteTelefono"],
+                ClienteEmail = form["clienteEmail"],
+                TipoImpresion = form["tipoImpresion"],
+                Tamano = form["tamano"],
+                Cantidad = int.TryParse(form["cantidad"], out var c) ? c : 0,
+                Anillado = bool.TryParse(form["anillado"], out var a) && a,
+                Estado = "Pendiente"
+            };
+
+            // 🔥 FIX PRECIO
+            if (decimal.TryParse(form["precioTotal"], out var precio))
+                nuevo.PrecioTotal = precio;
 
             pedidos.Add(nuevo);
 
