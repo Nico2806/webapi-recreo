@@ -17,6 +17,11 @@ namespace WebRecreo.Controllers
         {
             var form = Request.Form;
 
+            foreach (var key in form.Keys)
+            {
+                Console.WriteLine($"KEY: {key} - VALUE: {form[key]}");
+            }
+
             var nuevo = new Pedido
             {
                 Id = pedidos.Count + 1,
