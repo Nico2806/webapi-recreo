@@ -13,13 +13,29 @@ namespace WebRecreo.Controllers
 
         // ✅ CREAR PEDIDO
         [HttpPost]
-        public IActionResult Post()
+        public async Task<IActionResult> Post()
         {
             var form = Request.Form;
+            var archivo = Request.Form.Files.FirstOrDefault();
 
-            foreach (var key in form.Keys)
+            string rutaArchivo = null;
+
+            if (archivo != null && archivo.Length > 0)
             {
-                Console.WriteLine($"KEY: {key} - VALUE: {form[key]}");
+                var carpeta = Path.Combine(Directory.GetCurrentDirectory(), "uploads");
+
+                if (!Directory.Exists(carpeta))
+                    Directory.CreateDirectory(carpeta);
+
+                var nombreArchivo = Guid.NewGuid() + Path.GetExtension(archivo.FileName);
+                var rutaCompleta = Path.Combine(carpeta, nombreArchivo);
+
+                using (var stream = new FileStream(rutaCompleta, FileMode.Create))
+                {
+                    await archivo.CopyToAsync(stream);
+                }
+
+                rutaArchivo = rutaCompleta;
             }
 
             var nuevo = new Pedido
@@ -33,23 +49,16 @@ namespace WebRecreo.Controllers
                 Tamano = form["tamano"],
                 Cantidad = int.TryParse(form["cantidad"], out var c) ? c : 0,
                 Anillado = bool.TryParse(form["anillado"], out var a) && a,
-                Estado = "Pendiente"
+                Estado = "Pendiente",
+                RutaArchivo = rutaArchivo,
+                NombreArchivo = archivo?.FileName
             };
 
-            // 🔥 FIX PRECIO
-
-
-            
-
-            var precioStr = Request.Form["precioTotal"].FirstOrDefault();
-
-            Console.WriteLine("PRECIO RAW: " + precioStr);
-
+            var precioStr = form["precioTotal"].FirstOrDefault();
             if (!string.IsNullOrEmpty(precioStr))
             {
                 nuevo.PrecioTotal = Convert.ToDecimal(precioStr, CultureInfo.InvariantCulture);
             }
-            Console.WriteLine("PRECIO FINAL: " + nuevo.PrecioTotal);
 
             pedidos.Add(nuevo);
 
